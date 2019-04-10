@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Flappy jayhawk</title>
+  </head>
+  <style>
+  
+  #canvas{
+    display: block;
+    margin: 50px auto;
+  }
+  </style>
+  <body>
+  <center>
+   <h3>flappy jay</h3>
+   <canvas id="canvas" width="343" height="480"></canvas>
+  </body>
+<script src="imagload.js"></script>
+<script src="./bird.js"></script>
+<script src="./background.js"></script>
+<script src="./pipe.js"></script>
+
+   <script>
+     let gameTimer;//to count game running
+     let Time = 0;
+     let pipes = [];//to store the pipe
+     let index=0;
+ 
+ function createPipes() {
+ let pipe = new Pipe(imgs.up_pipe,imgs.up_mod,imgs.down_pipe,imgs.down_mod);
+  //adding pipe in to array pipes, replace them after have 3
+  if(pipes.length<3){
+    pipes.push(pipe);
+  }else{
+    pipes[index] = pipe;
+    index++;
+    if(index >= 3){
+      index = 0;
+    } 
+  }
+}
+
+function isHit(oPipe){
+    if(bird.posX+bird.bird.width>oPipe.posX&&bird.posX<oPipe.posX+oPipe.down_pipe.width){
+      if(bird.posY<oPipe.up_posY||bird.posY+30>oPipe.down_posY){
+        bird.dead();
+      }
+    }
+  }
+
+  function gameOver(){
+    
+    clearInterval(gameTimer);
+    ctx.font = "40px blod";
+    ctx.fontWeight = '800'
+    ctx.fillStyle = "Black";
+    ctx.fillText("GAME OVER", 20, 150);
+    
+  }
+
+  function restgame(){
+    bird.Y = 200;
+    bird.speed = 0;
+    bird.alive = true;
+    pipes = [];
+    
+  }
+
+
+  //start the game
+  function gameLayer() {
+    gameTimer = setInterval(function () {
+      clean();
+      drawBg();
+      if(Time%5 == 0){
+        if(Time == 30){
+          createPipes();
+          Time = 0;
+        }
+        
+      }
+      Time++;
+      for(var i = 0;i< pipes.length;i++){
+        pipes[i].move();
+        isHit(pipes[i]);
+      }
+
+      bird.birdfly();
+      //
+      if(!bird.alive){
+        gameOver();
+        restgame();
+      }
+    }, 24);
+  }
+  //using keyboard controll bird's speed
+  function kd(e) {
+    if (e.keyCode === 32) {
+      bird.speed = -10;
+    }
+  }
+  
+ 
+  
+ 
+ 
+  init();
+   
+   
+   </script>
+
+   
+
+ 
+</html>
